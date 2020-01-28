@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Sphere from "./shape-generators/sphere";
 
 const App: React.FC = () => {
+  var sphere = new Sphere();
+
+  console.log(sphere);
+  console.log("Runing");
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1> Bio Printer</h1>
       </header>
     </div>
   );
-}
+};
 
 export default App;
+
+//Make functions that create sphere coordinates with variable inputs
+
+//Make function that generates extruder velocity based on variable
+
+//Make function that generates G-code based shape array
+
+//
