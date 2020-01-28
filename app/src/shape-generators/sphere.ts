@@ -13,7 +13,6 @@ export default class Sphere extends Shape {
   pointArray: Point[];
 
   constructor() {
-    console.log("Constructing");
     super();
     this.currentTheta = 1;
     this.currentPhi = 1;
@@ -26,10 +25,12 @@ export default class Sphere extends Shape {
   private generatePointArray(radius: number, stepSize: number): Point[] {
     var pointArray = [];
 
+    //Generate Theta and Phi steps based on stepsize and layer height, and radius
+
     pointArray.push({
       x: this.generateXvalue(this.radius, this.currentTheta, this.currentPhi),
-      y: this.generateYvalue(),
-      z: this.generateZvalue()
+      y: this.generateYvalue(this.radius, this.currentTheta, this.currentPhi),
+      z: this.generateZvalue(this.radius, this.currentTheta, this.currentPhi)
     });
 
     return pointArray;
@@ -39,11 +40,11 @@ export default class Sphere extends Shape {
     return radius * Math.sin(theta) * Math.cos(theta);
   }
 
-  private generateYvalue() {
-    return 2;
+  private generateYvalue(radius: number, theta: number, phi: number): number {
+    return radius * Math.sin(theta) * Math.sin(theta);
   }
 
-  private generateZvalue() {
-    return 2;
+  private generateZvalue(radius: number, theta: number, phi: number): number {
+    return radius * Math.cos(theta);
   }
 }
