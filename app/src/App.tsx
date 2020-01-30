@@ -1,12 +1,10 @@
 import React from "react";
 import "./App.css";
-
+import { ThreeWindow } from "./threeViewer/three";
 const App: React.FC = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1> Bio Printer</h1>
-      </header>
+      <ThreeWindow />
     </div>
   );
 };
