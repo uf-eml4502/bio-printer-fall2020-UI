@@ -1,12 +1,7 @@
 import React from "react";
 import "./App.css";
-import Sphere from "./shape-generators/sphere";
 
 const App: React.FC = () => {
-  var sphere = new Sphere();
-
-  console.log(sphere);
-  console.log("Runing");
   return (
     <div className="App">
       <header className="App-header">
