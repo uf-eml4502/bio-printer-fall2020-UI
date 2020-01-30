@@ -4,6 +4,7 @@ import { ThreeWindow } from "./threeViewer/three";
 const App: React.FC = () => {
   return (
     <div className="App">
+      <h1> Bio Printer</h1>
       <ThreeWindow />
     </div>
   );

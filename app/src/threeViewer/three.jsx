@@ -11,10 +11,6 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-const style = {
-  height: 650 // we can control scene size by setting container dimensions
-};
-
 export class ThreeWindow extends Component {
   componentDidMount() {
     this.sceneSetup();
@@ -33,13 +29,11 @@ export class ThreeWindow extends Component {
   // https://threejs.org/docs/#manual/en/introduction/Creating-a-scene
   sceneSetup = () => {
     // get container dimensions and use them for scene sizing
-    const width = this.el.clientWidth;
-    const height = this.el.clientHeight;
 
     this.scene = new Scene();
     this.camera = new PerspectiveCamera(
       75, // fov = field of view
-      width / height, // aspect ratio
+      window.innerWidth / window.innerHeight, // aspect ratio
       0.1, // near plane
       1000 // far plane
     );
@@ -48,7 +42,7 @@ export class ThreeWindow extends Component {
     // https://threejs.org/docs/#examples/controls/OrbitControls
     this.controls = new OrbitControls(this.camera, this.el);
     this.renderer = new WebGLRenderer();
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.el.appendChild(this.renderer.domElement); // mount using React ref
   };
 
@@ -93,11 +87,9 @@ export class ThreeWindow extends Component {
   };
 
   handleWindowResize = () => {
-    const width = this.el.clientWidth;
-    const height = this.el.clientHeight;
-
-    this.renderer.setSize(width, height);
-    this.camera.aspect = width / height;
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.camera.aspect = window.innerWidth / window.innerHeight;
 
     // Note that after making changes to most of camera properties you have to call
     // .updateProjectionMatrix for the changes to take effect.
@@ -105,6 +97,6 @@ export class ThreeWindow extends Component {
   };
 
   render() {
-    return <div style={style} ref={ref => (this.el = ref)} />;
+    return <div ref={ref => (this.el = ref)} />;
   }
 }
