@@ -3,13 +3,13 @@ import {
   Scene,
   PerspectiveCamera,
   WebGLRenderer,
-  BoxGeometry,
-  MeshPhongMaterial,
-  DoubleSide,
-  Mesh,
-  PointLight
+  PointLight,
+  GridHelper,
+  AxesHelper
 } from "three";
+import { Sphere } from "../bio-shapes/sphere";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { bioShapeController } from "../controller";
 
 export class ThreeWindow extends Component {
   componentDidMount() {
@@ -25,12 +25,13 @@ export class ThreeWindow extends Component {
     this.controls.dispose();
   }
 
-  // Standard scene setup in Three.js. Check "Creating a scene" manual for more information
-  // https://threejs.org/docs/#manual/en/introduction/Creating-a-scene
   sceneSetup = () => {
     // get container dimensions and use them for scene sizing
 
     this.scene = new Scene();
+    this.kontroller = new bioShapeController(this.scene);
+
+    //kontroller.exportGcode();
     this.camera = new PerspectiveCamera(
       75, // fov = field of view
       window.innerWidth / window.innerHeight, // aspect ratio
@@ -44,21 +45,6 @@ export class ThreeWindow extends Component {
     this.renderer = new WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.el.appendChild(this.renderer.domElement); // mount using React ref
-  };
-
-  // Here should come custom code.
-  // Code below is taken from Three.js BoxGeometry example
-  // https://threejs.org/docs/#api/en/geometries/BoxGeometry
-  addCustomSceneObjects = () => {
-    const geometry = new BoxGeometry(2, 2, 2);
-    const material = new MeshPhongMaterial({
-      color: 0x156289,
-      emissive: 0x072534,
-      side: DoubleSide,
-      flatShading: true
-    });
-    this.cube = new Mesh(geometry, material);
-    this.scene.add(this.cube);
 
     const lights = [];
     lights[0] = new PointLight(0xffffff, 1, 0);
@@ -69,15 +55,25 @@ export class ThreeWindow extends Component {
     lights[1].position.set(100, 200, 100);
     lights[2].position.set(-100, -200, -100);
 
+    this.scene.add(new GridHelper(10, 10).rotateX(Math.PI / 2));
+    this.scene.add(new AxesHelper(200));
+
     this.scene.add(lights[0]);
     this.scene.add(lights[1]);
     this.scene.add(lights[2]);
   };
 
-  startAnimationLoop = () => {
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
+  addCustomSceneObjects = () => {
+    const dog = new Sphere(10, 0.2, 0.1);
 
+    this.kontroller.addBioShape(dog);
+    this.kontroller.exportGCode();
+  };
+
+  startAnimationLoop = () => {
+    //this.cube.rotation.x += 0.01;
+    //this.cube.rotation.y += 0.01;
+    //this.kontroller.update();
     this.renderer.render(this.scene, this.camera);
 
     // The window.requestAnimationFrame() method tells the browser that you wish to perform

@@ -1,4 +1,4 @@
-import Sphere from "./sphere";
+import { Sphere } from "./sphere";
 import { Shape } from "./shape";
 
 describe("Create spheres", () => {
