@@ -2,7 +2,7 @@ import {
   Scene,
   MeshPhongMaterial,
   DoubleSide,
-  TubeGeometry,
+  TubeBufferGeometry,
   Mesh
 } from "three";
 
@@ -40,13 +40,27 @@ export class bioShapeController {
       color: 0x156289,
       emissive: 0x072534,
       side: DoubleSide,
-      flatShading: true
+      flatShading: true,
+      opacity: 0.2,
+      transparent: true
     });
-
     var path = bioShape.generateThreeCurvePath();
-    var geometry1 = new TubeGeometry(path, path.curves.length, 0.2, 8, false);
+    var geometry1 = new TubeBufferGeometry(
+      path,
+      path.curves.length,
+      0.2,
+      8,
+      false
+    );
     var mesh = new Mesh(geometry1, material);
     this.scene.add(mesh);
+  }
+
+  addBioShapes(bioShapes: any) {
+    for (const bioShape of bioShapes) {
+      const D3data = bioShape.generateThreeCurvePath();
+      this.addBioShape(bioShape);
+    }
   }
 
   update() {

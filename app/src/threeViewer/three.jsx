@@ -8,6 +8,7 @@ import {
   AxesHelper
 } from "three";
 import { Sphere } from "../bio-shapes/sphere";
+import { SphereOfSpheres } from "../bio-shapes/sphereOfSpheres";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { bioShapeController } from "../controller";
 
@@ -64,9 +65,11 @@ export class ThreeWindow extends Component {
   };
 
   addCustomSceneObjects = () => {
-    const dog = new Sphere(10, 0.2, 0.1);
-
-    this.kontroller.addBioShape(dog);
+    //const dog = new Sphere(10, 0.2, 0.1,.25,.75,10,10,0);
+    const cat = new SphereOfSpheres(15, 1);
+    const bioShapes = cat.exportBioShapes();
+    //this.kontroller.addBioShape(dog);
+    this.kontroller.addBioShapes(cat.exportBioShapes());
     this.kontroller.exportGCode();
   };
 

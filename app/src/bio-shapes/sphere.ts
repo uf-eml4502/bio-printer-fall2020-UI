@@ -12,19 +12,27 @@ export class Sphere extends Shape {
   linearStep: number; //mm
   radius: number; //mm
   endPhiPoint: number; //The point to stop storing data in the array
-
+  xCenter: number;
+  yCenter: number;
+  zCenter: number;
   constructor(
     radius: number,
     layerHeight: number,
     linearStep: number,
     start_height: number = 0,
-    end_height: number = 1
+    end_height: number = 1,
+    xCenter: number = 0,
+    yCenter: number = 0,
+    zCenter: number = 0
   ) {
     super();
     this.currentTheta = 0;
     this.layerHeight = layerHeight;
     this.linearStep = linearStep;
     this.radius = radius;
+    this.xCenter = xCenter;
+    this.yCenter = yCenter;
+    this.zCenter = zCenter;
     this.currentPhi = this.calculatePhiFromZheight(2 * radius * start_height); //Caculated from user startpoint
     this.endPhiPoint = this.calculatePhiFromZheight(2 * radius * end_height); //Calculated for user endpoint
   }
@@ -42,9 +50,13 @@ export class Sphere extends Shape {
 
       //Add XYZ to points array
       this.pointArray.push({
-        x: this.generateXvalue(this.radius, this.currentTheta, this.currentPhi),
-        y: this.generateYvalue(this.radius, this.currentTheta, this.currentPhi),
-        z: z
+        x:
+          this.generateXvalue(this.radius, this.currentTheta, this.currentPhi) +
+          this.xCenter,
+        y:
+          this.generateYvalue(this.radius, this.currentTheta, this.currentPhi) +
+          this.yCenter,
+        z: z + this.zCenter
       });
 
       //Determine new Phi value based on linear distance to next
@@ -79,11 +91,18 @@ export class Sphere extends Shape {
       if (pointCount === 0) {
         //This is the first iteration
         //Just calculate and don't store any values
-        point1 = new Vector3(x, y, z);
-        console.log(point1);
+        point1 = new Vector3(
+          x + this.xCenter,
+          y + this.yCenter,
+          z + this.zCenter
+        );
       } else {
         // generate the line, move point 2 to point 1, next.
-        point2 = new Vector3(x, y, z);
+        point2 = new Vector3(
+          x + this.xCenter,
+          y + this.yCenter,
+          z + this.zCenter
+        );
 
         const line = new LineCurve3(point1, point2);
         curvePath.add(line);
@@ -95,7 +114,7 @@ export class Sphere extends Shape {
       }
 
       //Determine new Phi value based on linear distance to next
-      this.currentPhi = this.currentPhi + 0.01;
+      this.currentPhi = this.currentPhi + 0.1;
       this.currentTheta = this.determineThetaFromZHeight(z);
 
       pointCount++;
