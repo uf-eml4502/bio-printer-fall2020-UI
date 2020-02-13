@@ -21,7 +21,11 @@ export class bioShapeController {
   exportGCode() {
     //Generates all the Gcode for the job by looping through shapeList
     //Code to run at top of file
-    var g_code = " BIO PRINTER CODE G28 GXX GXXX initialization";
+    var g_code = "G21 ;metric values \n";
+    g_code += "G90 ;absolute positioning \n";
+    g_code += "G92 ;set zero \n";
+    g_code += "G83 ;set extruder to relative mode\n";
+
     for (var i = 0; i < this.shapeList.length; i++) {
       this.shapeList[i].generatePointArray();
       //Run this code between each shape
@@ -31,6 +35,8 @@ export class bioShapeController {
     }
 
     console.log(g_code);
+
+    //Trigger file download
   }
 
   addBioShape(bioShape: any) {
