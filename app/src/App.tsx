@@ -1,11 +1,14 @@
 import React from "react";
 import "./App.css";
 import { ThreeWindow } from "./threeViewer/three";
+import MachineViewer from "./MachineViewer";
 const App: React.FC = () => {
+  //<ThreeWindow />
+
   return (
     <div className="App">
       <h1> Bio Printer</h1>
-      <ThreeWindow />
+      <MachineViewer />
     </div>
   );
 };
