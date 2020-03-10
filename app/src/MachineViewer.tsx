@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 var GrblParser = require("grbl-parser");
 var parser = new GrblParser();
 const MachineViewer: React.FC = () => {
@@ -18,6 +18,29 @@ const MachineViewer: React.FC = () => {
     setZPosition(z);
     setEPosition(e);
   };
+
+  useInterval(getStatus, 250);
+
+  function useInterval(callback: any, delay: number) {
+    const savedCallback = useRef();
+
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        // @ts-ignore comments
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
 
   parser.dispatcher.addListener("status", updateMachineStatus); // bind myCallback to grbl status reports
 
