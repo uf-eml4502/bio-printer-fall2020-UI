@@ -63,7 +63,7 @@ const MachineViewer: React.FC = () => {
     //Apply settings to machine somehow
   }
 
-  async function sendGCodeToMachine() {
+  async function sendGCodeToMachine(gcode?: string) {
     const gcodeString = "G91 G0 Y100 F3000 G90\n";
 
     //Upload the Gcode String
