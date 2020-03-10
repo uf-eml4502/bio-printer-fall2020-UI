@@ -65,11 +65,12 @@ export class ThreeWindow extends Component {
   };
 
   addCustomSceneObjects = () => {
-    //const dog = new Sphere(10, 0.2, 0.1,.25,.75,10,10,0);
+    const dog = new Sphere(10, 0.2, 0.1, 0.25, 0.75, 10, 10, 0);
     const cat = new SphereOfSpheres(15, 1);
     const bioShapes = cat.exportBioShapes();
+
     //this.kontroller.addBioShape(dog);
-    this.kontroller.addBioShapes(cat.exportBioShapes());
+    this.kontroller.addBioShapes(bioShapes);
     this.kontroller.exportGCode();
   };
 

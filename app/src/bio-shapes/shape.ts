@@ -25,7 +25,8 @@ export class Shape {
         " Z" +
         point.z +
         " E" +
-        this.extrusion_speed;
+        this.extrusion_speed +
+        " \n";
       output_string += new_command;
     }
 
