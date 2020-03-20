@@ -1,15 +1,15 @@
 import React from "react";
-import "./App.css";
+import "../node_modules/augmented-ui/augmented.css";
+import "./App.scss";
+
 import { ThreeWindow } from "./threeViewer/three";
-import MachineViewer from "./MachineViewer";
-const App: React.FC = () => {
+const App = () => {
   //<ThreeWindow />
 
   return (
-    <div className="App">
-      <h1> Bio Printer</h1>
-      <MachineViewer />
-    </div>
+    <React.Fragment>
+      <ThreeWindow />
+    </React.Fragment>
   );
 };
 

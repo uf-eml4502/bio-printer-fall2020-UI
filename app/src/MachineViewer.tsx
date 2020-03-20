@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 var GrblParser = require("grbl-parser");
 var parser = new GrblParser();
-const MachineViewer: React.FC = () => {
+const MachineViewer: React.FC = (props: any) => {
+  const [isMachineRunning, setMachineRunning] = useState(false);
   const [xPosition, setXPosition] = useState(0);
   const [yPosition, setYPosition] = useState(0);
   const [zPosition, setZPosition] = useState(0);
@@ -17,6 +18,10 @@ const MachineViewer: React.FC = () => {
     setYPosition(y);
     setZPosition(z);
     setEPosition(e);
+
+    if (parsedData.data.status.state === "Idle") {
+      //console.log("Machine is Idle")
+    }
   };
 
   useInterval(getStatus, 250);
@@ -45,6 +50,7 @@ const MachineViewer: React.FC = () => {
   parser.dispatcher.addListener("status", updateMachineStatus); // bind myCallback to grbl status reports
 
   function sendJog(axis: string, direction: string, speed: number) {
+    setMachineRunning(true);
     fetch("http://169.254.2.217/command_silent", {
       headers: {
         "X-Filename": "application/x-www-form-urlencoded"
@@ -81,21 +87,42 @@ const MachineViewer: React.FC = () => {
   function onMachineConfigSelect(e: string) {
     console.log(e, "Machine has been selected");
     setMachine(e);
+    //Determine machine config
+    const config = getMachineConfig();
 
-    sendGCodeToMachine();
-    //Apply settings to machine somehow
+    //Send the machine config
+    sendMachineConfig(config);
   }
 
-  async function sendGCodeToMachine(gcode?: string) {
-    const gcodeString = "G91 G0 Y100 F3000 G90\n";
+  function sendMachineConfig(config: string) {
+    //Do some black magic here to send the machine config over the wire and rest the controller
+    console.log("Sending machine config");
 
+    const command = "M501 " + config + " \n";
+    console.log(command);
+    var response = fetch("http://169.254.2.217/command", {
+      headers: {
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      body: command,
+      method: "POST"
+    }).then(res => {
+      console.log(res.text());
+    });
+
+    console.log(response);
+
+    return response;
+  }
+  async function sendGCodeToMachine(gcode?: string) {
+    //const testgcodeString = "G91 G0 Y100 F3000 G90\n";
     //Upload the Gcode String
     await fetch("http://169.254.2.217/upload", {
       headers: {
         "X-Filename": "bob.gcode"
       },
       method: "POST",
-      body: gcodeString
+      body: gcode
     });
 
     //Have the controller Start playing the file
@@ -115,12 +142,45 @@ const MachineViewer: React.FC = () => {
   }
 
   async function getStatus() {
-    const result = await fetch("http://169.254.2.217/query");
-    const text = await result.text();
-    parser.parseData(text);
+    if (isMachineRunning) {
+      const result = await fetch("http://169.254.2.217/query");
+      const text = await result.text();
+      parser.parseData(text);
+    }
+  }
+
+  function getMachineConfig() {
+    console.log("Getting machine config");
+    console.log(machine);
+    switch (machine) {
+      case "neo":
+        return "neo";
+
+      case "bio":
+        return "bio";
+
+      case "pace":
+        return "pace";
+
+      case "cancer":
+        return "cancer";
+
+      default:
+        return "neo";
+    }
+  }
+
+  function startJob() {
+    setMachineRunning(true);
+    //Calculate G-code
+    const g_code = props.calculateGcode();
+    //Send G-Code to Machine
+    sendGCodeToMachine(g_code);
+
+    //Update status
   }
   return (
-    <React.Fragment>
+    <div className="outline" augmented-ui="tl-clip br-clip exe">
       <select
         onClick={e => {
           onMachineConfigSelect(e.currentTarget.value);
@@ -131,16 +191,14 @@ const MachineViewer: React.FC = () => {
         <option value="neo">Neo Printer</option>
         <option value="pace">PACE Printer</option>
       </select>
-      <button onClick={getStatus}> Get machine status </button>
       <h1>X:{xPosition}</h1>
       <h1>Y:{yPosition}</h1>
       <h1>Z:{zPosition}</h1>
       <h1>E:{ePosition}</h1>
       <h1>Status:{status}</h1>
 
-      <button>Go Back</button>
       <button onClick={pauseJob}>Pause Job</button>
-      <button> Start Job</button>
+      <button onClick={startJob}> Start Job</button>
       <button onClick={eStopJob}>E-Stop</button>
       <br />
       <button onClick={setOrigin}>Set Origin</button>
@@ -191,7 +249,7 @@ const MachineViewer: React.FC = () => {
         Jog Z+
       </button>
       <br />
-    </React.Fragment>
+    </div>
   );
 };
 

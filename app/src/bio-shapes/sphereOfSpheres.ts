@@ -11,6 +11,8 @@ export class SphereOfSpheres {
     this.exteriorSphereDiameter = exteriorSphereDiameter; //mm
     this.interiorSphereDiameter = interiorSphereDiameter; //mm
     this.gridPoints = this.generateInteriorSphereParameters();
+
+    return this.exportBioShapes();
   }
 
   generateInteriorSphereParameters() {
