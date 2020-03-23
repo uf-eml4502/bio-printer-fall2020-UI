@@ -1,5 +1,5 @@
 import React from "react";
-import "../node_modules/augmented-ui/augmented.css";
+//import "../node_modules/augmented-ui/augmented.css";
 import "./App.scss";
 
 import { ThreeWindow } from "./threeViewer/three";
